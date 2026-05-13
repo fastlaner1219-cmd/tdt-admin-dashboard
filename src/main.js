@@ -1,60 +1,48 @@
 import './style.css'
-import javascriptLogo from './assets/javascript.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import { setupCounter } from './counter.js'
+import { supabase } from './lib/supabase.js'
 
 document.querySelector('#app').innerHTML = `
-<section id="center">
-  <div class="hero">
-    <img src="${heroImg}" class="base" width="170" height="179">
-    <img src="${javascriptLogo}" class="framework" alt="JavaScript logo"/>
-    <img src="${viteLogo}" class="vite" alt="Vite logo" />
+  <div class="container">
+    <div class="glass-card">
+      <h1>TETE Delivery Tracker</h1>
+      <h2>Admin Dashboard <span>Live Test</span></h2>
+      
+      <div class="status-box" id="status-box">
+        <div class="loader" id="loader"></div>
+        <p id="status-text">데이터베이스(Supabase) 접속 시도 중...</p>
+      </div>
+      <p id="details-text" class="details-text"></p>
+    </div>
   </div>
-  <div>
-    <h1>Get started</h1>
-    <p>Edit <code>src/main.js</code> and save to test <code>HMR</code></p>
-  </div>
-  <button id="counter" type="button" class="counter"></button>
-</section>
-
-<div class="ticks"></div>
-
-<section id="next-steps">
-  <div id="docs">
-    <svg class="icon" role="presentation" aria-hidden="true"><use href="/icons.svg#documentation-icon"></use></svg>
-    <h2>Documentation</h2>
-    <p>Your questions, answered</p>
-    <ul>
-      <li>
-        <a href="https://vite.dev/" target="_blank">
-          <img class="logo" src="${viteLogo}" alt="" />
-          Explore Vite
-        </a>
-      </li>
-      <li>
-        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-          <img class="button-icon" src="${javascriptLogo}" alt="">
-          Learn more
-        </a>
-      </li>
-    </ul>
-  </div>
-  <div id="social">
-    <svg class="icon" role="presentation" aria-hidden="true"><use href="/icons.svg#social-icon"></use></svg>
-    <h2>Connect with us</h2>
-    <p>Join the Vite community</p>
-    <ul>
-      <li><a href="https://github.com/vitejs/vite" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#github-icon"></use></svg>GitHub</a></li>
-      <li><a href="https://chat.vite.dev/" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#discord-icon"></use></svg>Discord</a></li>
-      <li><a href="https://x.com/vite_js" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#x-icon"></use></svg>X.com</a></li>
-      <li><a href="https://bsky.app/profile/vite.dev" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#bluesky-icon"></use></svg>Bluesky</a></li>
-    </ul>
-  </div>
-</section>
-
-<div class="ticks"></div>
-<section id="spacer"></section>
 `
 
-setupCounter(document.querySelector('#counter'))
+async function testConnection() {
+  const statusBox = document.getElementById('status-box')
+  const statusText = document.getElementById('status-text')
+  const detailsText = document.getElementById('details-text')
+  const loader = document.getElementById('loader')
+  
+  try {
+    const { data, error } = await supabase.from('tdt_staff').select('*').limit(1)
+    
+    loader.style.display = 'none'
+    
+    if (error) {
+      statusBox.classList.add('error')
+      statusText.innerHTML = `⚠️ 환경 변수 연결 오류`
+      detailsText.innerHTML = `Supabase에서 거절했습니다.<br>Netlify 환경 변수(URL, ANON_KEY) 설정이 누락되었거나 오타가 있을 수 있습니다.<br><span style="color:#ff5555;font-size:0.8rem;">[에러코드: ${error.message}]</span>`
+    } else {
+      statusBox.classList.add('success')
+      statusText.innerHTML = `✅ 실시간 DB 연결 성공!`
+      detailsText.innerHTML = `넷플리파이 파이프라인과 Supabase 데이터베이스가 완벽하게 통신하고 있습니다.<br>이제 본격적인 개발을 진행할 수 있습니다.`
+    }
+  } catch (err) {
+    loader.style.display = 'none'
+    statusBox.classList.add('error')
+    statusText.innerHTML = `❌ 시스템 에러`
+    detailsText.innerHTML = `오류: ${err.message}`
+  }
+}
+
+// 부드러운 애니메이션을 위해 약간의 딜레이 후 테스트 시작
+setTimeout(testConnection, 800)
