@@ -37,10 +37,10 @@ document.querySelector('#app').innerHTML = `
   </div>
 `
 
-// 1. 지도 초기화 (기본 위치: 서울 강남역 인근)
+// 1. 지도 초기화 (기본 위치: 베트남 호치민시 7군 푸미흥 인근)
 const map = L.map('map', {
   zoomControl: false // 커스텀 줌 컨트롤 사용 가능성
-}).setView([37.498095, 127.027610], 14)
+}).setView([10.7303, 106.7115], 14)
 
 // 어두운 테마의 지도 타일 (CartoDB Dark Matter)
 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
@@ -57,10 +57,10 @@ let staffData = []
 
 // 시연용 가짜 데이터 (DB가 비어있을 경우 표시)
 const mockStaff = [
-  { id: '1', name: '김동혁', status: 'active', lat: 37.498095, lng: 127.027610, dist: 12.4, lastUpdate: '방금 전' },
-  { id: '2', name: '이민수', status: 'idle', lat: 37.500215, lng: 127.031542, dist: 38.1, lastUpdate: '15분 전' },
-  { id: '3', name: '박지훈', status: 'active', lat: 37.495123, lng: 127.024102, dist: 5.2, lastUpdate: '1분 전' },
-  { id: '4', name: '최현우', status: 'offline', lat: 37.503410, lng: 127.021110, dist: 0.0, lastUpdate: '어제' },
+  { id: '1', name: '김동혁', status: 'active', lat: 10.730300, lng: 106.711500, dist: 12.4, lastUpdate: '방금 전' },
+  { id: '2', name: '이민수', status: 'idle', lat: 10.735215, lng: 106.715542, dist: 38.1, lastUpdate: '15분 전' },
+  { id: '3', name: '박지훈', status: 'active', lat: 10.725123, lng: 106.708102, dist: 5.2, lastUpdate: '1분 전' },
+  { id: '4', name: '최현우', status: 'offline', lat: 10.732410, lng: 106.721110, dist: 0.0, lastUpdate: '어제' },
 ]
 
 async function loadData() {
